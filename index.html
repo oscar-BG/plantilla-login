@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        .formulario {
+            background-color: #fafafa;
+            margin: 1rem;
+            padding: 1rem;
+            border: 2px solid #ccc;
+            text-align: center;
+            border-radius: 5px;
+        }
+
+        input[type=text], select {
+          width: 50%;
+          padding: 12px 20px;
+          margin: 8px 0;
+          display: block;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          box-sizing: border-box;
+          margin-left: auto;
+          margin-right: auto;
+        }
+        input[type=password], select {
+          width: 50%;
+          padding: 12px 20px;
+          margin: 8px 0;
+          display: block;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          box-sizing: border-box;
+          margin-left: auto;
+          margin-right: auto;
+        }
+        input[type=button] {
+          width: 30%;
+          background-color: #598392;
+          color: white;
+          padding: 14px 20px;
+          margin: 8px 0;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          display: block;
+          margin-left: auto;
+          margin-right: auto;
+        }
+        #alert{
+            background-color: red;
+            display: inline-block;
+            border-radius: 5px;
+            color: white;
+        }
+        #alert-bienvenida{
+            background-color: rgb(70, 199, 70);
+            display: inline-block;
+            border-radius: 5px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="formulario">
+        <h1>Login</h1>
+        <form>
+            <label for="usuario">Ingresa tu usuario</label>
+            <input type="text" name="user" id="user">
+            <label for="clave">Ingresa tu contraseña</label>
+            <input type="password" name="pass" id="pass">
+            <div id="alert"></div>
+            <div id="alert-bienvenida"></div>
+            <input type="button" value="enviar" onclick="respuesta()">
+        </form>
+    </div>
+
+    <script src="jquery.js"></script>
+    <script src="index.js"></script>
+    <script>
+        
+        function respuesta(){
+            console.log("respuesta")
+            let usuario = $("#user").val()
+            let pass = $("#pass").val()
+
+            console.log(usuario)
+            console.log(pass)
+            
+            $.ajax({
+                url: 'http://localhost:8002/infra_webservice/login.php',
+                type: 'POST',
+                data: {
+                    user: usuario,
+                    pass: pass
+                }
+            }).done(function(data) {
+                var json = JSON.parse(data)
+                console.log(json)
+
+                var usuario_existe = json.usuario_existe;
+                
+
+                if(usuario_existe != "1"){
+                    document.getElementById('alert').innerHTML = '<h1>Usuario y contraseña incorrectas</h1>';
+                }else{
+                    document.getElementById('alert-bienvenida').innerHTML = '<h1>Bienenido</h1>';
+                    localStorage.setItem('id', parseInt(json.success.id))
+                    var url = "presentacion.html";
+                    $(location).attr('href',url);
+
+
+                }
+                //var user_res = json.usuario
+                //console.log('Tengo usuario', user_res)
+
+            }).fail(function(err) {
+                console.log(err)
+            })
+        }
+    </script>
+
+
+
+
+    
+</body>
+</html>
