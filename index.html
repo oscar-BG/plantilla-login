@@ -79,7 +79,6 @@
     </div>
 
     <script src="jquery.js"></script>
-    <script src="index.js"></script>
     <script>
         
         function respuesta(){
@@ -107,12 +106,10 @@
                 if(usuario_existe != "1"){
                     document.getElementById('alert').innerHTML = '<h1>Usuario y contraseña incorrectas</h1>';
                 }else{
-                    document.getElementById('alert-bienvenida').innerHTML = '<h1>Bienenido</h1>';
+                    //document.getElementById('alert-bienvenida').innerHTML = '<h1>Bienenido</h1>';
                     localStorage.setItem('id', parseInt(json.success.id))
                     var url = "presentacion.html";
                     $(location).attr('href',url);
-
-
                 }
                 //var user_res = json.usuario
                 //console.log('Tengo usuario', user_res)
