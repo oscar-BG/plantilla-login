@@ -5,6 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="bootstrap/style.css">
+    <link rel="stylesheet" href="bootstrap/swal2.css">
     <title>Login</title>
     <style>
         .formulario {
@@ -57,13 +59,13 @@
     <div class="container">
         <div class="formulario">
             <h1>Login</h1>
-            <form>
+            <form id="form-login" data-parsley-validate="true">
                 <label for="usuario">Ingresa tu usuario</label>
-                <input class="form-control" type="text" name="user" id="user" placeholder="Usuario" required="true">
+                <input class="form-control" type="text" name="user" id="user" placeholder="Usuario" required="1">
                 <label for="clave">Ingresa tu contraseña</label>
-                <input type="password" name="pass" id="pass" placeholder="Contraseña" required="true">
+                <input class="form-control" type="password" name="pass" id="pass" placeholder="Contraseña" required="1">
                 <div id="alert"></div>
-                <input type="button" name="op" id="op" value="login" onclick="respuesta()">
+                <button class="btn btn-primary">Iniciar Session</button>
             </form>
         </div>
     </div>
@@ -71,47 +73,85 @@
     <script src="jquery.js"></script>
     <script src="js/popper.js"></script>
     <script src="js/bootstrap.bundle.js"></script>
+    <script src="js/parsley.js"></script>
+    <script src="js/swal2.js"></script>
     <script>
-        
-        function respuesta(){
-            console.log("respuesta")
-            let usuario = $("#user").val()
-            let pass = $("#pass").val()
-            let op = $("#op").val()
+        $('#form-login').submit( function (e){
+            e.preventDefault()
 
-            console.log(usuario)
-            console.log(pass)
-            console.log(op)
-            
-            $.ajax({
-                url: 'http://localhost:8002/infra_webservice/login.php',
-                type: 'POST',
-                data: {
-                    user: usuario,
-                    pass: pass,
-                    op: op
-                }
-            }).done(function(data) {
-                var json = JSON.parse(data)
-                console.log(json)
+            var form = $(this);
+            form.parsley().validate();
 
-                var usuario_existe = json.usuario_existe;
+            if(form.parsley().isValid()){
                 
+                console.log("respuesta")
+                let usuario = $("#user").val()
+                let pass = $("#pass").val()
+    
+                abrir_loader()
 
-                if(usuario_existe != "1"){
-                    $("#alert").addClass("alert alert-danger");
-                    document.getElementById('alert').innerHTML = '<span>Usuario y contraseña incorrectas</span>';
-                }else{
-                    var nombre = json.success.nombre;
-                    localStorage.setItem('id', parseInt(json.success.id))
-                    localStorage.setItem('nombre', nombre)
-                    var url = "presentacion.html";
-                    $(location).attr('href',url);
-                }
-            }).fail(function(err) {
-                console.log(err)
+                $.ajax({
+                    url: 'http://localhost:8002/infra_webservice/login.php',
+                    type: 'POST',
+                    data: {
+                        user: usuario,
+                        pass: pass,
+                        op: "login"
+                    }
+                }).done(function(data) {
+                    var json = JSON.parse(data)
+                    console.log(json)
+    
+                    var usuario_existe = json.usuario_existe;
+                    
+    
+                    if(usuario_existe != "1"){
+                        swal_toast('error', 'Usuario o contraseña incorrectos.')
+                    }else{
+                        var nombre = json.success.nombre;
+                        localStorage.setItem('id', parseInt(json.success.id))
+                        localStorage.setItem('nombre', nombre)
+                        var url = "presentacion.html";
+                        $(location).attr('href',url);
+                    }
+                }).fail(function(err) {
+                    console.log(err)
+                })
+            }
+        })
+
+        function abrir_loader() {
+            var img_path = "img/loader.svg";
+
+            loader_swal = Swal.fire({
+                imageUrl: img_path,
+                imageHeight: 40,
+                width: 110,
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                background: '#fff'
+            });
+
+        }
+        function swal_toast(tipo, text) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-right',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                iconColor: 'white',
+                customClass: {
+                    popup: 'colored-toast'
+                },
+            })
+
+            Toast.fire({
+                icon: tipo,
+                title: text
             })
         }
+
     </script>
 </body>
 </html>

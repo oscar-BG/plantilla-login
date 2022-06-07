@@ -6,35 +6,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
+
+    
     <title>Document</title>
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-sm navbar-light bg-primary">
+    <nav class="navbar navbar-expand-sm navbar-light bg-secondary">
         <div class="container">
-            <a class="navbar-brand" href="#" id="Saludar"></a>
+            <a class="navbar-brand text-white" href="#" id="Saludar"></a>
             <ul class="navbar-nav">
-                <li class="nav-item" ><a class="nav-link" href="usuarios.html">Usuarios</a></li>
-                <li class="nav-item" ><a class="nav-link" href="presentacion.html">Inicio</a></li>
+                <li class="nav-item" ><a class="nav-link text-white" href="usuarios.html">Usuarios</a></li>
+                <li class="nav-item" ><a class="nav-link text-white" href="presentacion.html">Inicio</a></li>
             </ul>
         </div>
     </nav>
     <br><br>
 
-    <table id="usuarios" class="table table-resposive table-hover table-striped">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Usuario</th>
-                <th>Nombre</th>
-                <th>Num Nomina</th>
-                <th>Num sucursal</th>
-                <th>Sucursal</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    <div class="container">
+        <div class="card bg-secondary">
+            <div class="card-body">
+                <table id="usuarios" class="table table-resposive table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Usuario</th>
+                            <th>Nombre</th>
+                            <th>Num Nomina</th>
+                            <th>Num sucursal</th>
+                            <th>Sucursal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <script src="jquery.js"></script>
     <script src="js/popper.js"></script>
     <script src="js/bootstrap.bundle.js"></script>
@@ -67,6 +76,7 @@
                 $('#usuarios').DataTable({
                     data: json.usuarios,
                     responsive : true,
+                    language: {"url": "https://cdn.datatables.net/plug-ins/1.10.21/i18n/Spanish.json"},
                     "order": [[ 0, "desc" ]],
                     columns:[
                         {data: "id"},
