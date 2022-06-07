@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="bootstrap/bootstrap.min.css">
     <title>Login</title>
     <style>
         .formulario {
@@ -50,51 +51,45 @@
           margin-left: auto;
           margin-right: auto;
         }
-        #alert{
-            background-color: red;
-            display: inline-block;
-            border-radius: 5px;
-            color: white;
-        }
-        #alert-bienvenida{
-            background-color: rgb(70, 199, 70);
-            display: inline-block;
-            border-radius: 5px;
-            color: white;
-        }
     </style>
 </head>
 <body>
-    <div class="formulario">
-        <h1>Login</h1>
-        <form>
-            <label for="usuario">Ingresa tu usuario</label>
-            <input type="text" name="user" id="user">
-            <label for="clave">Ingresa tu contraseña</label>
-            <input type="password" name="pass" id="pass">
-            <div id="alert"></div>
-            <div id="alert-bienvenida"></div>
-            <input type="button" value="enviar" onclick="respuesta()">
-        </form>
+    <div class="container">
+        <div class="formulario">
+            <h1>Login</h1>
+            <form>
+                <label for="usuario">Ingresa tu usuario</label>
+                <input class="form-control" type="text" name="user" id="user" placeholder="Usuario" required="true">
+                <label for="clave">Ingresa tu contraseña</label>
+                <input type="password" name="pass" id="pass" placeholder="Contraseña" required="true">
+                <div id="alert"></div>
+                <input type="button" name="op" id="op" value="login" onclick="respuesta()">
+            </form>
+        </div>
     </div>
 
     <script src="jquery.js"></script>
+    <script src="js/popper.js"></script>
+    <script src="js/bootstrap.bundle.js"></script>
     <script>
         
         function respuesta(){
             console.log("respuesta")
             let usuario = $("#user").val()
             let pass = $("#pass").val()
+            let op = $("#op").val()
 
             console.log(usuario)
             console.log(pass)
+            console.log(op)
             
             $.ajax({
                 url: 'http://localhost:8002/infra_webservice/login.php',
                 type: 'POST',
                 data: {
                     user: usuario,
-                    pass: pass
+                    pass: pass,
+                    op: op
                 }
             }).done(function(data) {
                 var json = JSON.parse(data)
@@ -104,25 +99,19 @@
                 
 
                 if(usuario_existe != "1"){
-                    document.getElementById('alert').innerHTML = '<h1>Usuario y contraseña incorrectas</h1>';
+                    $("#alert").addClass("alert alert-danger");
+                    document.getElementById('alert').innerHTML = '<span>Usuario y contraseña incorrectas</span>';
                 }else{
-                    //document.getElementById('alert-bienvenida').innerHTML = '<h1>Bienenido</h1>';
+                    var nombre = json.success.nombre;
                     localStorage.setItem('id', parseInt(json.success.id))
+                    localStorage.setItem('nombre', nombre)
                     var url = "presentacion.html";
                     $(location).attr('href',url);
                 }
-                //var user_res = json.usuario
-                //console.log('Tengo usuario', user_res)
-
             }).fail(function(err) {
                 console.log(err)
             })
         }
     </script>
-
-
-
-
-    
 </body>
 </html>
